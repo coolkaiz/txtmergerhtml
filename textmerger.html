@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Merge Text Files</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .file-input {
+            margin-bottom: 10px;
+        }
+
+        .merge-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .merge-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+    <script>
+        // JavaScript code here...
+        function mergeFiles() {
+    var input = document.getElementById("file-input");
+    var files = input.files;
+    var output = "";
+
+    if (files.length === 0) {
+        alert("Please select at least one file.");
+        return;
+    }
+
+    for (var i = 0; i < files.length; i++) {
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+            output += e.target.result + "\n";
+        };
+
+        reader.onerror = function (e) {
+            alert("Error occurred while reading the file: " + e.target.error);
+        };
+
+        reader.readAsText(files[i]);
+    }
+
+    setTimeout(function () {
+        if (!output) {
+            alert("No data to merge.");
+            return;
+        }
+
+        var volumeNumber = 1;
+        var fileName = "merged_file_volume" + volumeNumber + ".txt";
+        var blob = new Blob([output], { type: "text/plain;charset=utf-8" });
+
+        if (typeof saveAs === "function") {
+            saveAs(blob, fileName);
+            volumeNumber++;
+
+            var clearSelection = confirm("Merge completed. Do you want to clear the selected files?");
+            if (clearSelection) {
+                input.value = null;
+            }
+        } else {
+            alert("Your browser doesn't support the required features to save the file.");
+        }
+    }, 1000);
+}
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Merge Text Files</h1>
+        <input type="file" id="file-input" class="file-input" multiple>
+        <button onclick="mergeFiles()" class="merge-btn">Merge Files</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+</body>
+</html>
